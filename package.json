@@ -15,7 +15,10 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+<<<<<<< HEAD
   "proxy": "http://localhost:5000",
+=======
+>>>>>>> fa21544d1688636641149f185748f47df6eed2fe
   "eslintConfig": {
     "extends": [
       "react-app"
@@ -37,5 +40,23 @@
     "tailwindcss": "^3.3.0",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.24"
+<<<<<<< HEAD
+=======
+  },
+  "keywords": [
+    "pet",
+    "adoption",
+    "rescue",
+    "shelter",
+    "matching",
+    "algorithm",
+    "react"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/pet-matcher-app.git"
+>>>>>>> fa21544d1688636641149f185748f47df6eed2fe
   }
 }

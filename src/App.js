@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import PetMatchingApp from './components/PetMatchingApp';
@@ -91,10 +92,20 @@ function AppContent() {
       <div className="w-full h-full pt-16">
         <PetMatchingApp />
       </div>
+=======
+import React from 'react';
+import PetMatchingApp from './components/PetMatchingApp';
+
+function App() {
+  return (
+    <div className="App">
+      <PetMatchingApp />
+>>>>>>> fa21544d1688636641149f185748f47df6eed2fe
     </div>
   );
 }
 
+<<<<<<< HEAD
 function App() {
   return (
     <AuthProvider>
@@ -105,4 +116,6 @@ function App() {
   );
 }
 
+=======
+>>>>>>> fa21544d1688636641149f185748f47df6eed2fe
 export default App;

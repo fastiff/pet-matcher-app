@@ -26,13 +26,8 @@ const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 const PORT = process.env.PORT || 5000;
 
 // Email transporter
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: EMAIL_USER,
-    pass: EMAIL_PASS
-  }
-});
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const generateVerificationToken = () => {
   return crypto.randomBytes(32).toString('hex');
@@ -41,27 +36,11 @@ const generateVerificationToken = () => {
 const sendVerificationEmail = async (email, token) => {
   const verificationUrl = `${FRONTEND_URL}/verify-email?token=${token}`;
   
-  const mailOptions = {
-    from: EMAIL_USER,
+  const msg = {
     to: email,
+    from: process.env.EMAIL_FROM || 'noreply@bestfitpets.com',
     subject: 'Verify Your Email - Best Fit Pets',
     html: `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-          .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
-          .button { display: inline-block; padding: 15px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; }
-          .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h1>🐾 Welcome to Best Fit Pets!</h1>
           </div>
           <div class="content">
             <h2>Verify Your Email Address</h2>
@@ -85,7 +64,7 @@ const sendVerificationEmail = async (email, token) => {
   };
 
   try {
-    await transporter.sendMail(mailOptions);
+    await sgMail.send(msg);
     return true;
   } catch (error) {
     console.error('Error sending email:', error);
