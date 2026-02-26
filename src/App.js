@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import PetMatchingApp from './components/PetMatchingApp';
@@ -10,13 +9,13 @@ import { LogOut, User } from 'lucide-react';
 function AppContent() {
   const [authView, setAuthView] = useState('login');
   const [verificationToken, setVerificationToken] = useState(null);
-  
+
   const { user, isAuthenticated, loading, logout } = useAuth();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
-    
+
     if (token) {
       setVerificationToken(token);
       setAuthView('verify');
@@ -34,7 +33,7 @@ function AppContent() {
 
   if (authView === 'verify') {
     return (
-      <EmailVerification 
+      <EmailVerification
         token={verificationToken}
         onComplete={() => {
           setAuthView('login');
@@ -47,14 +46,14 @@ function AppContent() {
   if (!isAuthenticated) {
     if (authView === 'register') {
       return (
-        <Register 
+        <Register
           onSwitchToLogin={() => setAuthView('login')}
         />
       );
     }
-    
+
     return (
-      <Login 
+      <Login
         onSwitchToRegister={() => setAuthView('register')}
         onLoginSuccess={() => {}}
       />
@@ -72,7 +71,7 @@ function AppContent() {
               <p className="text-xs text-gray-500">Find your perfect companion</p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-4">
             <div className="flex items-center bg-blue-50 rounded-lg px-4 py-2">
               <User className="w-4 h-4 text-blue-600 mr-2" />
@@ -88,24 +87,14 @@ function AppContent() {
           </div>
         </div>
       </div>
-      
+
       <div className="w-full h-full pt-16">
         <PetMatchingApp />
       </div>
-=======
-import React from 'react';
-import PetMatchingApp from './components/PetMatchingApp';
-
-function App() {
-  return (
-    <div className="App">
-      <PetMatchingApp />
->>>>>>> fa21544d1688636641149f185748f47df6eed2fe
     </div>
   );
 }
 
-<<<<<<< HEAD
 function App() {
   return (
     <AuthProvider>
@@ -116,6 +105,4 @@ function App() {
   );
 }
 
-=======
->>>>>>> fa21544d1688636641149f185748f47df6eed2fe
 export default App;
