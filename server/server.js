@@ -25,14 +25,9 @@ const EMAIL_PASS = process.env.EMAIL_PASS;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 const PORT = process.env.PORT || 5000;
 
-// Email transporter (nodemailer with Gmail)
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: EMAIL_USER,
-    pass: EMAIL_PASS
-  }
-});
+// SendGrid email
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const generateVerificationToken = () => {
   return crypto.randomBytes(32).toString('hex');
@@ -41,9 +36,12 @@ const generateVerificationToken = () => {
 const sendVerificationEmail = async (email, token) => {
   const verificationUrl = `${FRONTEND_URL}?token=${token}`;
 
-  const mailOptions = {
-    from: `"Best Fit Pets" <${EMAIL_USER}>`,
+  const msg = {
     to: email,
+    from: {
+      email: process.env.EMAIL_FROM || 'support@bestfitpets.com',
+      name: 'Best Fit Pets'
+    },
     subject: 'Verify Your Email - Best Fit Pets',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -70,10 +68,10 @@ const sendVerificationEmail = async (email, token) => {
   };
 
   try {
-    await transporter.sendMail(mailOptions);
+    await sgMail.send(msg);
     return true;
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error('SendGrid error:', error.response ? error.response.body : error);
     return false;
   }
 };
