@@ -25,46 +25,52 @@ const EMAIL_PASS = process.env.EMAIL_PASS;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 const PORT = process.env.PORT || 5000;
 
-// Email transporter
-const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+// Email transporter (nodemailer with Gmail)
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: EMAIL_USER,
+    pass: EMAIL_PASS
+  }
+});
 
 const generateVerificationToken = () => {
   return crypto.randomBytes(32).toString('hex');
 };
 
 const sendVerificationEmail = async (email, token) => {
-  const verificationUrl = `${FRONTEND_URL}/verify-email?token=${token}`;
-  
-  const msg = {
+  const verificationUrl = `${FRONTEND_URL}?token=${token}`;
+
+  const mailOptions = {
+    from: `"Best Fit Pets" <${EMAIL_USER}>`,
     to: email,
-    from: process.env.EMAIL_FROM || 'noreply@bestfitpets.com',
     subject: 'Verify Your Email - Best Fit Pets',
     html: `
-          </div>
-          <div class="content">
-            <h2>Verify Your Email Address</h2>
-            <p>Thank you for registering! We're excited to help you find your perfect pet companion.</p>
-            <p>Please click the button below to verify your email address and activate your account:</p>
-            <p style="text-align: center;">
-              <a href="${verificationUrl}" class="button">Verify Email Address</a>
-            </p>
-            <p>Or copy and paste this link into your browser:</p>
-            <p style="word-break: break-all; color: #667eea;">${verificationUrl}</p>
-            <p><strong>This link will expire in 24 hours.</strong></p>
-            <p>If you didn't create an account with Best Fit Pets, please ignore this email.</p>
-          </div>
-          <div class="footer">
-            <p>© ${new Date().getFullYear()} Best Fit Pets. All rights reserved.</p>
-          </div>
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center;">
+          <h1 style="color: white; margin: 0;">🐾 Best Fit Pets</h1>
         </div>
-      </body>
-      </html>
+        <div style="padding: 30px; background: #f9f9f9;">
+          <h2>Verify Your Email Address</h2>
+          <p>Thank you for registering! We're excited to help you find your perfect pet companion.</p>
+          <p>Please click the button below to verify your email address and activate your account:</p>
+          <p style="text-align: center;">
+            <a href="${verificationUrl}" style="background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; display: inline-block;">Verify Email Address</a>
+          </p>
+          <p>Or copy and paste this link into your browser:</p>
+          <p style="word-break: break-all; color: #667eea;">${verificationUrl}</p>
+          <p><strong>This link will expire in 24 hours.</strong></p>
+          <p>If you didn't create an account with Best Fit Pets, please ignore this email.</p>
+        </div>
+        <div style="padding: 20px; text-align: center; color: #888; font-size: 12px;">
+          <p>© ${new Date().getFullYear()} Best Fit Pets. All rights reserved.</p>
+        </div>
+      </div>
     `
   };
 
   try {
-    await sgMail.send(msg);
+    await transporter.sendMail(mailOptions);
     return true;
   } catch (error) {
     console.error('Error sending email:', error);
